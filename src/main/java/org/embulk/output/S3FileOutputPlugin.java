@@ -9,6 +9,7 @@ import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Locale;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import org.embulk.config.Config;
 import org.embulk.config.ConfigDefault;
 import org.embulk.config.ConfigDiff;
@@ -189,6 +190,10 @@ public class S3FileOutputPlugin
             if (cannedAccessControlListOptional.isPresent()) {
                 request.withCannedAcl(cannedAccessControlListOptional.get());
             }
+            // Request server-side encryption.
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setSSEAlgorithm(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
+            request.setMetadata(objectMetadata);
             client.putObject(request);
         }
 
